@@ -468,7 +468,7 @@
         </div>
       </div>
     </section>
-    <section id="instagram" class="padding-large overflow-hidden no-padding-top">
+    {{-- <section id="instagram" class="padding-large overflow-hidden no-padding-top">
       <div class="container">
         <div class="row">
           <div class="display-header text-uppercase text-dark text-center pb-3">
@@ -528,7 +528,7 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> --}}
     <footer id="footer" class="overflow-hidden">
       <div class="container">
         <div class="row">

@@ -9,6 +9,7 @@ use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LandingController;
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\TestimonialController;
 
 Route::get('/', [HomeController::class , 'index']);
@@ -51,5 +52,10 @@ Route::prefix('/admin')->middleware(Authenticate::class , UserActivity::class)->
     Route::post('/update_testimonial/{id}' , [TestimonialController::class , 'update_testimonial']);
     Route::get('/delete_testimonial/{id}' , [TestimonialController::class , 'delete_testimonial']);
 
+    // {{ Service }}
+    Route::get('/show_service', [ServiceController::class , 'show_service']);
+    Route::post('/add_service', [ServiceController::class , 'add_service']);
+    Route::post('/update_service/{id}' , [ServiceController::class , 'update_service']);
+    Route::get('/delete_service/{id}' , [ServiceController::class , 'delete_service']);
 
 });
