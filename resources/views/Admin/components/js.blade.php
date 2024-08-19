@@ -5,3 +5,16 @@
 <script src="{{ asset('cms/assets/demo/chart-bar-demo.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
 <script src="{{ asset('cms/js/datatables-simple-demo.js')}}"></script>
+
+
+<script>
+    function confirmDelete(categoryId) {
+        if (confirm('Do you want to delete all products related to this category?')) {
+            window.location.href = `/admin/delete_category/${categoryId}?deleteProducts=yes`;
+        } else {
+            if (confirm('Do you want to delete the category without deleting the products?')) {
+                window.location.href = `/admin/delete_category/${categoryId}?deleteProducts=no`;
+            }
+        }
+    }
+</script>

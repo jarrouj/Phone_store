@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LandingController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -57,5 +58,11 @@ Route::prefix('/admin')->middleware(Authenticate::class , UserActivity::class)->
     Route::post('/add_service', [ServiceController::class , 'add_service']);
     Route::post('/update_service/{id}' , [ServiceController::class , 'update_service']);
     Route::get('/delete_service/{id}' , [ServiceController::class , 'delete_service']);
+
+    // {{ Category }}
+    Route::get('/show_category', [CategoryController::class , 'show_category']);
+    Route::post('/add_category', [CategoryController::class , 'add_category']);
+    Route::post('/update_category/{id}' , [CategoryController::class , 'update_category']);
+    Route::get('/delete_category/{id}' , [CategoryController::class , 'delete_category']);
 
 });
