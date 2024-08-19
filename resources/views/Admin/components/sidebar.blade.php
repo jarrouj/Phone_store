@@ -50,6 +50,10 @@
                         <a class="nav-link" href="{{ url('/admin/show_category') }}">Categories</a>
                     </nav>
 
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="{{ url('/admin/show_product') }}">Products</a>
+                    </nav>
+
 
                     <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">

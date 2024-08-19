@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LandingController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\TestimonialController;
 
@@ -64,5 +65,13 @@ Route::prefix('/admin')->middleware(Authenticate::class , UserActivity::class)->
     Route::post('/add_category', [CategoryController::class , 'add_category']);
     Route::post('/update_category/{id}' , [CategoryController::class , 'update_category']);
     Route::get('/delete_category/{id}' , [CategoryController::class , 'delete_category']);
+    Route::get('/search_category', [CategoryController::class, 'search_category']);
+
+
+    // {{ Product }}
+    Route::get('/show_product', [ProductController::class , 'show_product']);
+    Route::post('/add_product', [ProductController::class , 'add_product']);
+    Route::post('/update_product/{id}' , [ProductController::class , 'update_product']);
+    Route::get('/delete_product/{id}' , [ProductController::class , 'delete_product']);
 
 });

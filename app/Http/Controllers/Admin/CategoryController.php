@@ -56,4 +56,13 @@ class CategoryController extends Controller
 
         return redirect()->back()->with('message', $message);
     }
+
+    public function search_category(Request $request)
+    {
+        $query = $request->input('query');
+
+        $categories = Category::where('name', 'LIKE', "%$query%")->get();
+
+        return response()->json($categories);
+    }
 }
