@@ -27,7 +27,7 @@
                             <div class="d-block w-50 m-auto">
                                 <form action="{{ url('/admin/search_category') }}" method="GET">
                                     @csrf
-                                    <p for="" class="text-center form-label">Category Name
+                                    <p for="" class="text-center form-label">Search Category
                                     </p>
 
                                     <div class="d-flex justify-content-center">

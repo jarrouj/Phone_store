@@ -93,4 +93,46 @@ class ProductController extends Controller
 
         return redirect()->back()->with('message' , 'Product Deleted Successfully');
     }
+
+    public function view_product($id)
+    {
+        $product  = Product::find($id);
+        $category = Category::all();
+
+        return view('Admin.product.view_product' , compact('product' , 'category'));
+
+    }
+
+    public function search_product(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Fetch products matching the query
+        $products = Product::where('name', 'LIKE', "%$query%")->get();
+
+        // Fetch all categories
+        $categories = Category::all();
+
+        // Map products to include category names
+        $response = $products->map(function($product) use ($categories) {
+            $category = $categories->firstWhere('id', $product->category_id);
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'description' => $product->description,
+                'img' => $product->img,
+                'category_id' => $product->category_id,
+                'category_name' => $category ? $category->name : 'Uncategorized',
+            ];
+        });
+
+        return response()->json([
+            'products' => $response,
+            'categories' => $categories,
+        ]);
+    }
+
+
+
 }
