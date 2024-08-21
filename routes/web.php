@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\LandingController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Home\CartController;
 
 Route::get('/', [HomeController::class , 'index']);
 

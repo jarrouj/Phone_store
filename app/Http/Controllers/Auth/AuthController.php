@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\RegisterRequest;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Container\Attributes\Log;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -36,7 +37,7 @@ class AuthController extends Controller
 
                 // Save the access token in the session
                 // We can also save token in local storage
-                session(['access_token' => $access_token]);
+                session(['token' => $access_token]);
 
                 // Redirect based on user type
                 if ($user->usertype == 1) {
@@ -85,6 +86,38 @@ class AuthController extends Controller
             ], 500);
         }
     }
+    public function logout(Request $request)
+    {
+        try {
+            // Check if the user is authenticated
+
+                // Get the current user
+                $user = Auth::user();
+
+                // Revoke the user's current access token
+
+                // Log out the user
+                Auth::logout();
+
+                // Remove the access token from the session
+
+
+            Session::flush();
+
+            Session::forget('token');
+            Session::save();
+
+            // Respond with success
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 
     public function reset_password() {}
 
