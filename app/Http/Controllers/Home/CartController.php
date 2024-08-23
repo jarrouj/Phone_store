@@ -10,56 +10,73 @@ use Illuminate\Support\Facades\Auth;
 class CartController extends Controller
 {
 
-    public function show_cart()
-    {
-        $product = 'hello';
-        dd($product);
-        return view('welcome');
-    }
 
 
     public function add_cart(Request $request)
     {
         try {
             if (Auth::check()) {
-                $cart = new Cart();
                 $user = Auth::user();
 
-                $cart->user_id = $user->id;
-                $cart->product_id = $request->product_id;
-                $cart->qty = $request->qty;
+                // Check if the product is already in the cart for the current user
+                $cart = Cart::where('user_id', $user->id)
+                            ->where('product_id', $request->product_id)
+                            ->first();
 
-                $cart->save();
+                if ($cart) {
+                    // If product exists, increment the quantity
+                    $cart->qty += $request->qty;
+                    $cart->save();
+                } else {
+                    // If product does not exist, create a new cart entry
+                    $cart = new Cart();
+                    $cart->user_id = $user->id;
+                    $cart->product_id = $request->product_id;
+                    $cart->qty = $request->qty;
+                    $cart->save();
+                }
 
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Product added to cart successfully!',
                     'cart_item' => $cart
                 ], 200);
+
             } else {
-                $cartItem = [
-                    'product_id' => $request->product_id,
-                    'qty' => $request->qty,
-                ];
-
-
+                // Handling for guest users (not logged in)
                 $cart = session()->get('cart', []);
+                $productExists = false;
 
+                // Check if the product is already in the session cart
+                foreach ($cart as &$cartItem) {
+                    if ($cartItem['product_id'] == $request->product_id) {
+                        // Increment the quantity if product exists in the session cart
+                        $cartItem['qty'] += $request->qty;
+                        $productExists = true;
+                        break;
+                    }
+                }
 
-                $cart[] = $cartItem;
+                if (!$productExists) {
+                    // If the product does not exist, add it to the session cart
+                    $cart[] = [
+                        'product_id' => $request->product_id,
+                        'qty' => $request->qty,
+                    ];
+                }
 
                 session()->put('cart', $cart);
 
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Product added to cart successfully!',
-                    'cart_item' => $cartItem
+                    'cart_item' => $cart
                 ], 200);
             }
 
             // Get updated cart item count
-           $cartItemCount = $user ? Cart::where('user_id', $user->id)->count() : count(session('cart', []));
-           return response()->json(['cartItemCount' => $cartItemCount]);
+            $cartItemCount = Auth::check() ? Cart::where('user_id', $user->id)->count() : count(session('cart', []));
+            return response()->json(['cartItemCount' => $cartItemCount]);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -70,5 +87,24 @@ class CartController extends Controller
         }
     }
 
+    public function update_cart_item($id , Request $request)
+    {
+        $cart = Cart::find($id);
+
+        $cart->qty = $request->qty;
+
+        $cart->save();
+
+        return response()->json($cart);
+    }
+
+    public function delete_cart_item($id)
+    {
+        $cart = Cart::find($id);
+
+        $cart->delete();
+
+        return redirect()->back();
+    }
 
 }

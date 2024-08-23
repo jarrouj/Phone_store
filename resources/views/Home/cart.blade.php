@@ -3,57 +3,96 @@
 <html lang="en">
 <head>
 @include('Home.components.css')
+{{-- <link href="{{ asset('cart-page/style.css')}}" rel="stylesheet"> --}}
+
+<style>
+    .untree_co-section {
+  padding: 7rem 0; }
+
+ .form-control {
+  height: 50px;
+  border-radius: 10px;
+  font-family: "Inter", sans-serif; }
+  .form-control:active, .form-control:focus {
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-color: #3b5d50;
+    -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2); }
+  .form-control::-webkit-input-placeholder {
+    font-size: 14px; }
+  .form-control::-moz-placeholder {
+    font-size: 14px; }
+  .form-control:-ms-input-placeholder {
+    font-size: 14px; }
+  .form-control:-moz-placeholder {
+    font-size: 14px; }
+
+    .site-blocks-table {
+  overflow: auto; }
+  .site-blocks-table .product-thumbnail {
+    width: 200px; }
+  .site-blocks-table .btn {
+    padding: 2px 10px; }
+  .site-blocks-table thead th {
+    padding: 30px;
+    text-align: center;
+    border-width: 0px !important;
+    vertical-align: middle;
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 18px; }
+  .site-blocks-table td {
+    padding: 20px;
+    text-align: center;
+    vertical-align: middle;
+    color: rgba(0, 0, 0, 0.8); }
+  .site-blocks-table tbody tr:first-child td {
+    border-top: 1px solid #3b5d50 !important; }
+  .site-blocks-table .btn {
+    background: none !important;
+    color: #000000;
+    border: none;
+    height: auto !important; }
+
+ .site-block-order-table th {
+  border-top: none !important;
+  border-bottom-width: 1px !important; }
+
+ .site-block-order-table td, .site-block-order-table th {
+  color: #000000; }
+
+ .couponcode-wrap input {
+  border-radius: 10px !important; }
+
+ .text-primary {
+  color: #3b5d50 !important; }
+
+ .thankyou-icon {
+  position: relative;
+  color: #3b5d50; }
+  .thankyou-icon:before {
+    position: absolute;
+    content: "";
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(59, 93, 80, 0.2); }
+
+
+
+</style>
 
 	<body>
 
 		<!-- Start Header/Navigation -->
-		<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
-
-			<div class="container">
-				<a class="navbar-brand" href="index.html">Furni<span>.</span></a>
-
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-
-				<div class="collapse navbar-collapse" id="navbarsFurni">
-					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-						<li class="nav-item ">
-							<a class="nav-link" href="index.html">Home</a>
-						</li>
-						<li><a class="nav-link" href="shop.html">Shop</a></li>
-						<li><a class="nav-link" href="about.html">About us</a></li>
-						<li><a class="nav-link" href="services.html">Services</a></li>
-						<li><a class="nav-link" href="blog.html">Blog</a></li>
-						<li><a class="nav-link" href="contact.html">Contact us</a></li>
-					</ul>
-
-					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-						<li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
-						<li><a class="nav-link" href="cart.html"><img src="images/cart.svg"></a></li>
-					</ul>
-				</div>
-			</div>
-
-		</nav>
+	@include('Home.components.header')
 		<!-- End Header/Navigation -->
 
-		<!-- Start Hero Section -->
-			<div class="hero">
-				<div class="container">
-					<div class="row justify-content-between">
-						<div class="col-lg-5">
-							<div class="intro-excerpt">
-								<h1>Cart</h1>
-							</div>
-						</div>
-						<div class="col-lg-7">
 
-						</div>
-					</div>
-				</div>
-			</div>
-		<!-- End Hero Section -->
+        @php
+            $total_amount = 0;
+        @endphp
 
 
 
@@ -74,53 +113,43 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td class="product-thumbnail">
-                            <img src="images/product-1.png" alt="Image" class="img-fluid">
-                          </td>
-                          <td class="product-name">
-                            <h2 class="h5 text-black">Product 1</h2>
-                          </td>
-                          <td>$49.00</td>
-                          <td>
-                            <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                              <div class="input-group-prepend">
-                                <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                              </div>
-                              <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                              </div>
-                            </div>
+                        @foreach ($cartItems as $cartItem)
+                        @foreach ($products as $product)
+                        @if($cartItem->product_id == $product->id)
+                        <tr data-id="{{ $cartItem->id }}">
+                            <td class="product-thumbnail">
+                              <img src="product/{{ $product->img }}" alt="{{ $product->img }}" class="img-fluid">
+                            </td>
+                            <td class="product-name">
+                              <h2 class="h5 text-black">{{ $product->name }}</h2>
+                            </td>
+                            <td class="product-price" data-price="{{ $product->price }}">${{ $product->price }}</td>
+                            <td>
+                                <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-outline-black decrease" type="button" style="outline: none; box-shadow: none; background: none;">&minus;</button>
+                                    </div>
+                                    <input type="text" class="form-control text-center quantity-amount" value="{{ $cartItem->qty }}" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-black increase" type="button" style="outline: none; box-shadow: none; background: none;">&plus;</button>
+                                    </div>
+                                </div>
+                            </td>
 
-                          </td>
-                          <td>$49.00</td>
-                          <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                        </tr>
+                            <td class="item-total" data-id="{{ $cartItem->id }}" data-price="{{ $product->price }}">${{ $product->price * $cartItem->qty }}</td>
 
-                        <tr>
-                          <td class="product-thumbnail">
-                            <img src="images/product-2.png" alt="Image" class="img-fluid">
-                          </td>
-                          <td class="product-name">
-                            <h2 class="h5 text-black">Product 2</h2>
-                          </td>
-                          <td>$49.00</td>
-                          <td>
-                            <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                              <div class="input-group-prepend">
-                                <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                              </div>
-                              <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                              </div>
-                            </div>
+                            <td><a href="{{ url('/api/delete_cart_item' , ['id' => $cartItem->id ]) }}" class="btn btn-black btn-sm">X</a></td>
+                          </tr>
+                          @php
+                              $total_amount += $product->price * $cartItem->qty
+                          @endphp
+                        @endif
+                        @endforeach
 
-                          </td>
-                          <td>$49.00</td>
-                          <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                        </tr>
+                        @endforeach
+
+
+
                       </tbody>
                     </table>
                   </div>
@@ -130,11 +159,9 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="row mb-5">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                      <button class="btn btn-black btn-sm btn-block">Update Cart</button>
-                    </div>
+
                     <div class="col-md-6">
-                      <button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>
+                      <a href="{{ url('/') }}" class="btn btn-black btn-sm btn-block">Continue Shopping</a>
                     </div>
                   </div>
                   <div class="row">
@@ -158,26 +185,26 @@
                           <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
                         </div>
                       </div>
-                      <div class="row mb-3">
+                      {{-- <div class="row mb-3">
                         <div class="col-md-6">
                           <span class="text-black">Subtotal</span>
                         </div>
                         <div class="col-md-6 text-right">
                           <strong class="text-black">$230.00</strong>
                         </div>
-                      </div>
+                      </div> --}}
                       <div class="row mb-5">
                         <div class="col-md-6">
                           <span class="text-black">Total</span>
                         </div>
                         <div class="col-md-6 text-right">
-                          <strong class="text-black">$230.00</strong>
+                          <strong class="text-black total-amount">${{ $total_amount }}</strong>
                         </div>
                       </div>
 
                       <div class="row">
                         <div class="col-md-12">
-                          <button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Proceed To Checkout</button>
+                          <button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='/checkout-page'">Proceed To Checkout</button>
                         </div>
                       </div>
                     </div>
@@ -189,114 +216,69 @@
 
 
 		<!-- Start Footer Section -->
-		<footer class="footer-section">
-			<div class="container relative">
-
-				<div class="sofa-img">
-					<img src="images/sofa.png" alt="Image" class="img-fluid">
-				</div>
-
-				<div class="row">
-					<div class="col-lg-8">
-						<div class="subscription-form">
-							<h3 class="d-flex align-items-center"><span class="me-1"><img src="images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
-
-							<form action="#" class="row g-3">
-								<div class="col-auto">
-									<input type="text" class="form-control" placeholder="Enter your name">
-								</div>
-								<div class="col-auto">
-									<input type="email" class="form-control" placeholder="Enter your email">
-								</div>
-								<div class="col-auto">
-									<button class="btn btn-primary">
-										<span class="fa fa-paper-plane"></span>
-									</button>
-								</div>
-							</form>
-
-						</div>
-					</div>
-				</div>
-
-				<div class="row g-5 mb-5">
-					<div class="col-lg-4">
-						<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a></div>
-						<p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant</p>
-
-						<ul class="list-unstyled custom-social">
-							<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
-						</ul>
-					</div>
-
-					<div class="col-lg-8">
-						<div class="row links-wrap">
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">About us</a></li>
-									<li><a href="#">Services</a></li>
-									<li><a href="#">Blog</a></li>
-									<li><a href="#">Contact us</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Support</a></li>
-									<li><a href="#">Knowledge base</a></li>
-									<li><a href="#">Live chat</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Jobs</a></li>
-									<li><a href="#">Our team</a></li>
-									<li><a href="#">Leadership</a></li>
-									<li><a href="#">Privacy Policy</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Nordic Chair</a></li>
-									<li><a href="#">Kruzo Aero</a></li>
-									<li><a href="#">Ergonomic Chair</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
-				</div>
-
-				<div class="border-top copyright">
-					<div class="row pt-4">
-						<div class="col-lg-6">
-							<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co">Untree.co</a> Distributed By <a hreff="https://themewagon.com">ThemeWagon</a>  <!-- License information: https://untree.co/license/ -->
-            </p>
-						</div>
-
-						<div class="col-lg-6 text-center text-lg-end">
-							<ul class="list-unstyled d-inline-flex ms-auto">
-								<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
-								<li><a href="#">Privacy Policy</a></li>
-							</ul>
-						</div>
-
-					</div>
-				</div>
-
-			</div>
-		</footer>
+		@include('Home.components.footer')
 		<!-- End Footer Section -->
 
+        <script>
+ $(document).ready(function() {
+    // Decrease quantity
+    $('.decrease').click(function() {
+        var quantityInput = $(this).closest('.quantity-container').find('.quantity-amount');
+        var newQty = parseInt(quantityInput.val());
+        if (newQty >= 1) { // Ensure quantity doesn't go below 1
+            quantityInput.val(newQty);
+            updateCart($(this).closest('tr').data('id'), newQty, $(this));
+        }
+    });
 
-		<script src="js/bootstrap.bundle.min.js"></script>
-		<script src="js/tiny-slider.js"></script>
-		<script src="js/custom.js"></script>
+    // Increase quantity
+    $('.increase').click(function() {
+        var quantityInput = $(this).closest('.quantity-container').find('.quantity-amount');
+        var newQty = parseInt(quantityInput.val());
+        quantityInput.val(newQty);
+        updateCart($(this).closest('tr').data('id'), newQty, $(this));
+    });
+
+    // Update qty cart items with ajax
+    function updateCart(cartId, newQty, element) {
+        var row = element.closest('tr');
+        var price = parseFloat(row.find('.product-price').data('price'));
+        var itemTotal = price * newQty;
+
+        // Update item total in the table
+        row.find('.item-total').text('$' + itemTotal.toFixed(2));
+
+        // Update overall cart total
+        var totalAmount = 0;
+        $('.item-total').each(function() {
+            totalAmount += parseFloat($(this).text().replace('$', ''));
+        });
+        $('.total-amount').text('$' + totalAmount.toFixed(2));
+
+        // Send update request to server
+        $.ajax({
+            url: `/api/update_cart_item/${cartId}`,
+            type: 'POST',
+            data: {
+                qty: newQty,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                console.log('Cart updated successfully:', response);
+                // You may want to handle server response here if needed
+            },
+            error: function(error) {
+                console.log('Error updating cart:', error);
+            }
+        });
+    }
+});
+
+        </script>
+
+		<script src="cart-page/js/bootstrap.bundle.min.js"></script>
+		<script src="cart-page/js/tiny-slider.js"></script>
+		<script src="cart-page/js/custom.js"></script>
 	</body>
 
 </html>

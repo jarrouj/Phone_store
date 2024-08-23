@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Home\CartController;
+use App\Http\Controllers\Home\OrderController;
 
 Route::get('/', [HomeController::class , 'index']);
 
@@ -23,6 +24,8 @@ Route::get('/register', [AuthController::class , 'register_page'])->name('regist
 Route::get('/auth/{provider}/redirect', [AuthController::class , 'redirect']);
 Route::get('/auth/{provider}/callback', [AuthController::class , 'callback']);
 
+Route::get('/cart', [HomeController::class , 'show_cart']);
+Route::get('/checkout-page', [OrderController::class , 'show_order']);
 
 
 

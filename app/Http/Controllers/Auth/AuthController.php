@@ -32,19 +32,14 @@ class AuthController extends Controller
             $password = $request->password;
 
             if (Auth::attempt(compact('email', 'password'))) {
-                $user         = Auth::user();
+                $request->session()->regenerate(); // Regenerate session to prevent fixation attacks
+                $user = Auth::user();
                 $access_token = $user->createToken('authToken')->plainTextToken;
 
-                // Save the access token in the session
-                // We can also save token in local storage
                 session(['token' => $access_token]);
 
                 // Redirect based on user type
-                if ($user->usertype == 1) {
-                    return redirect('/admin');
-                } else {
-                    return redirect('/');
-                }
+                return $user->usertype == 1 ? redirect('/admin') : redirect('/');
             } else {
                 return response()->json([
                     'status'  => false,
@@ -91,7 +86,6 @@ class AuthController extends Controller
         try {
             // Check if the user is authenticated
 
-                // Get the current user
                 $user = Auth::user();
 
                 // Revoke the user's current access token
