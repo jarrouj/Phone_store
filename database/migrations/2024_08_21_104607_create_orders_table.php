@@ -20,8 +20,9 @@ return new class extends Migration
             $table->string('order_number');
             $table->string('username');
             $table->boolean('paid')->default(0);//not paid
-            $table->boolean('method')->default(1);//cash , 0 by card
+            $table->boolean('method')->default(1);// 1=>cash , 0->paypal/stripe
             $table->boolean('registered')->default(0);//not registered
+            $table->boolean('delivered')->default(0);//not delivered
             $table->string('promo')->nullable(); //get the promo after pressing on place order (if there is promo)
             $table->double('total_usd')->nullable();
             $table->boolean('confirm')->nullable(); // 1-confirmed 2-not confirmed

@@ -5,16 +5,19 @@ use App\Http\Middleware\UserActivity;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Home\CartController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Admin\BlogController;
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\LandingController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\TestimonialController;
-use App\Http\Controllers\Home\CartController;
-use App\Http\Controllers\Home\OrderController;
+use App\Http\Controllers\Home\OrderController as HomeOrderController;
+use App\Http\Controllers\Payment\PaymentController;
+
 
 Route::get('/', [HomeController::class , 'index']);
 
@@ -24,9 +27,20 @@ Route::get('/register', [AuthController::class , 'register_page'])->name('regist
 Route::get('/auth/{provider}/redirect', [AuthController::class , 'redirect']);
 Route::get('/auth/{provider}/callback', [AuthController::class , 'callback']);
 
+//{{ Cart }}
 Route::get('/cart', [HomeController::class , 'show_cart']);
-Route::get('/checkout-page', [OrderController::class , 'show_order']);
 
+// {{ Order }}
+Route::get('/checkout-page', [HomeOrderController::class , 'show_order']);
+
+//{{ Payments }}
+Route::post('/paypal/{amount}', [PaymentController::class , 'paypal'])->name('paypal');
+Route::get('/cash_on_delivery/{amount}', [PaymentController::class , 'cash_on_delivery']);
+Route::get('/success', [PaymentController::class , 'success'])->name('success');
+Route::get('/cancel', [PaymentController::class , 'cancel'])->name('cancel');
+Route::get('/order-success', [PaymentController::class , 'order_success']);
+
+Route::get('/my-order' , [HomeController::class , 'my_order'])->middleware('web');
 
 
 Route::prefix('/admin')->middleware(Authenticate::class , UserActivity::class)->group(function () {
@@ -79,5 +93,14 @@ Route::prefix('/admin')->middleware(Authenticate::class , UserActivity::class)->
     Route::get('/delete_product/{id}' , [ProductController::class , 'delete_product']);
     Route::get('/view_product/{id}' , [ProductController::class , 'view_product']);
     Route::get('/search_product', [ProductController::class, 'search_product']);
+
+    // {{ Order }}
+    Route::get('/show_order', [OrderController::class , 'show_order']);
+    Route::get('/update_order/{id}' , [OrderController::class , 'update_order']);
+    Route::post('/update_order_confirm/{id}' , [OrderController::class , 'update_order_confirm']);
+    Route::get('/delete_order/{id}' , [OrderController::class , 'delete_order']);
+    Route::get('/view_order/{id}' , [OrderController::class , 'view_order']);
+    Route::get('/search_order', [OrderController::class, 'search_order']);
+    Route::post('/update-status/{id}',[OrderController::class,'update_status'])->name('update-status');
 
 });

@@ -1,11 +1,11 @@
-<footer id="footer" class="overflow-hidden">
+<footer id="footer" class="overflow-hidden" style="background-color: rgb(243, 243, 243)">
     <div class="container">
       <div class="row">
         <div class="footer-top-area">
           <div class="row d-flex flex-wrap justify-content-between">
             <div class="col-lg-3 col-sm-6 pb-3">
               <div class="footer-menu">
-                <img src="images/main-logo.png" alt="logo">
+                <img src="{{asset('home/assets/images/main-logo.png')}}" alt="logo">
                 <p>Nisi, purus vitae, ultrices nunc. Sit ac sit suscipit hendrerit. Gravida massa volutpat aenean odio erat nullam fringilla.</p>
                 <div class="social-links">
                   <ul class="d-flex list-unstyled">
@@ -109,7 +109,7 @@
   </footer>
 
 
-  <div id="footer-bottom">
+  <div id="footer-bottom" style="background-color: rgb(243, 243, 243)">
     <div class="container">
       <div class="row d-flex flex-wrap justify-content-between">
         <div class="col-md-4 col-sm-6">

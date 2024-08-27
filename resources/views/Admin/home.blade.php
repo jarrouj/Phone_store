@@ -15,5 +15,8 @@
             </div>
         </div>
       @include('Admin.components.js')
+
     </body>
+
+
 </html>

@@ -82,8 +82,12 @@
 
 
 </style>
+</head>
 
-	<body>
+<body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
+
+
+
 
 		<!-- Start Header/Navigation -->
 	@include('Home.components.header')
@@ -275,10 +279,11 @@
 });
 
         </script>
-
-		<script src="cart-page/js/bootstrap.bundle.min.js"></script>
-		<script src="cart-page/js/tiny-slider.js"></script>
-		<script src="cart-page/js/custom.js"></script>
+        <script src="{{ asset('home/assets/js/jquery-1.11.0.min.js')}}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+		<script src="{{ asset('cart-page/js/bootstrap.bundle.min.js')}}"></script>
+		<script src="{{ asset('cart-page/js/tiny-slider.js')}}"></script>
+		<script src="{{ asset('cart-page/js/custom.js')}}"></script>
 	</body>
 
 </html>

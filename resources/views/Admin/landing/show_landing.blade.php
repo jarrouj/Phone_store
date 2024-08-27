@@ -7,7 +7,7 @@
        @include('Admin.components.navbar')
         <div id="layoutSidenav">
             @include('Admin.components.sidebar')
-            <div id="layoutSidenav_content">
+            <div id="layoutSidenav_content" style="overflow-x: hidden;">
                 <main>
 
                     <div class="row mb-3">

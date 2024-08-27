@@ -183,48 +183,86 @@ input[type=checkbox]{
                 </div>
 
 
-                <form id="payment-form" method="POST" action="{{ url('/api/stripe_payment/' . $total_amount) }}">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="left border">
-                                <div class="row">
-                                    <span class="header">Payment</span>
-                                    <div class="icons">
-                                        <img src="https://img.icons8.com/color/48/000000/visa.png"/>
-                                        <img src="https://img.icons8.com/color/48/000000/mastercard-logo.png"/>
-                                        <img src="https://img.icons8.com/color/48/000000/maestro.png"/>
-                                    </div>
-                                </div>
-                                <div class="payment-details">
-                                    <span>Cardholder's name:</span>
-                                    <input type="text" id="cardholder-name" placeholder="Linda Williams" required name="cardholderName">
-
-                                    <span>Card Number:</span>
-                                    <input type="text" id="card-number" placeholder="Card Number" required name="cardNumber">
-
-                                    <span>Expiration Date:</span>
-                                    <input type="text" id="card-expiry" placeholder="MM/YY" required>
-
-                                    <span>CVV:</span>
-                                    <input type="text" id="card-cvc" placeholder="CVV" required name="cvv">
-
-                                    <input type="checkbox" id="save_card" class="align-left" name="saveCard">
-                                    <label for="save_card">Save card details to wallet</label>
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="left border">
+                            <div class="row">
+                                <span class="header">Payment</span>
+                                <div class="icons">
+                                    <img src="https://img.icons8.com/color/48/000000/visa.png" onclick="selectPaymentMethod('card')" style="cursor: pointer;" />
+                                    <img src="https://img.icons8.com/color/48/000000/paypal.png" onclick="selectPaymentMethod('paypal')" style="cursor: pointer;" />
+                                    <img src="https://img.icons8.com/color/48/000000/cash-in-hand.png" onclick="selectPaymentMethod('cash')" style="cursor: pointer;" />
                                 </div>
                             </div>
-                        </div>
 
-                        @php
-                            $total_amount = 0;
-                        @endphp
-                        <div class="col-md-5">
-                            <div class="right border">
-                                <div class="header">Order Summary</div>
-                                <p>{{ $cartItemCount }} items</p>
-                                @foreach ($cartItems as $cartItem)
-                                    @foreach ($products as $product)
-                                        @if ($cartItem->product_id == $product->id)
+                            <!-- Payment Method Selection (hidden) -->
+                            <div class="payment-method" style="display: none;">
+                                <label>
+                                    <input type="radio" name="paymentMethod" value="card" id="card-method" checked>
+                                    Credit/Debit Card
+                                </label>
+                                <label>
+                                    <input type="radio" name="paymentMethod" value="paypal" id="paypal-method">
+                                    Pay with PayPal
+                                </label>
+                                <label>
+                                    <input type="radio" name="paymentMethod" value="cash" id="cash-method">
+                                    Cash on Delivery
+                                </label>
+                            </div>
+
+                            <form id="payment-form" method="POST" action="{{ url('/api/stripe_payment/' . $total_amount) }}">
+                                @csrf
+                            <!-- Card Payment Details -->
+                            <div id="card-payment-details" class="payment-details">
+                                <span>Cardholder's name:</span>
+                                <input type="text" id="cardholder-name" placeholder="Linda Williams" required name="cardholderName">
+
+                                <span>Card Number:</span>
+                                <input type="text" id="card-number" placeholder="Card Number" required name="cardNumber">
+
+                                <span>Expiration Date:</span>
+                                <input type="text" id="card-expiry" placeholder="MM/YY" required>
+
+                                <span>CVV:</span>
+                                <input type="text" id="card-cvc" placeholder="CVV" required name="cvv">
+
+                                <input type="checkbox" id="save_card" class="align-left" name="saveCard">
+                                <label for="save_card">Save card details to wallet</label>
+
+                                <button type="submit" id="pay-with-card" class="btn">Pay</button>
+                            </div>
+                        </form>
+
+                            <!-- PayPal Payment Button -->
+                            <div id="paypal-payment-details" class="payment-details" style="display: none;">
+                                <form id="paypal-form" action="{{ url('/paypal/' . $total_amount) }}" method="POST">
+                                    @csrf
+                                    <button type="button" id="pay-with-paypal" class="btn" onclick="submitPaypalForm()">Pay with PayPal</button>
+                                </form>
+                            </div>
+
+                            <!-- Cash Payment Details (optional message or info) -->
+                            <div id="cash-payment-details" class="payment-details" style="display: none;">
+                                <p>You have selected Cash on Delivery. Please prepare the exact amount.</p>
+                                <form  action="{{ url('/cash_on_delivery/' . $total_amount) }}" method="GET">
+                                    @csrf
+                                <button type="submit" id="pay-with-cash" class="btn">Pay on Delivery</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    @php
+                        $total_amount = 0;
+                    @endphp
+                    <div class="col-md-5">
+                        <div class="right border">
+                            <div class="header">Order Summary</div>
+                            <p>{{ $cartItemCount }} items</p>
+                            @foreach ($cartItems as $cartItem)
+                                @foreach ($products as $product)
+                                    @if ($cartItem->product_id == $product->id)
                                         <div class="row item">
                                             <div class="col-4 align-self-center"><img class="img-fluid" src="product/{{ $product->img }}"></div>
                                             <div class="col-8">
@@ -238,29 +276,27 @@ input[type=checkbox]{
                                             $total_amount += $product->price * $cartItem->qty;
                                         @endphp
 
-                                        @endif
-                                    @endforeach
+                                    @endif
                                 @endforeach
+                            @endforeach
 
-                                <hr>
-                                <div class="row lower">
-                                    <div class="col text-left">Subtotal</div>
-                                    <div class="col text-right">$ {{ $total_amount }}</div>
-                                </div>
-                                <div class="row lower">
-                                    <div class="col text-left">Delivery</div>
-                                    <div class="col text-right">Free</div>
-                                </div>
-                                <div class="row lower">
-                                    <div class="col text-left"><b>Total to pay</b></div>
-                                    <div class="col text-right total-amount"><b>$ {{ $total_amount }}</b></div>
-                                </div>
-                                <button type="submit" id="place-order" class="btn">Place order</button>
-                                <p class="text-muted text-center">Complimentary Shipping & Returns</p>
+                            <hr>
+                            <div class="row lower">
+                                <div class="col text-left">Subtotal</div>
+                                <div class="col text-right">$ {{ $total_amount }}</div>
                             </div>
+                            <div class="row lower">
+                                <div class="col text-left">Delivery</div>
+                                <div class="col text-right">Free</div>
+                            </div>
+                            <div class="row lower">
+                                <div class="col text-left"><b>Total to pay</b></div>
+                                <div class="col text-right total-amount"><b>$ {{ $total_amount }}</b></div>
+                            </div>
+                            <p class="text-muted text-center">Complimentary Shipping & Returns</p>
                         </div>
                     </div>
-                </form>
+                </div>
 
 
                 <div id="error-message" class="text-danger"></div>
@@ -371,6 +407,31 @@ input[type=checkbox]{
         </script> --}}
 
 
+        <script>
+            function selectPaymentMethod(method) {
+                const cardDetails = document.getElementById('card-payment-details');
+                const paypalDetails = document.getElementById('paypal-payment-details');
+                const cashDetails = document.getElementById('cash-payment-details');
+
+                // Hide all payment details
+                cardDetails.style.display = 'none';
+                paypalDetails.style.display = 'none';
+                cashDetails.style.display = 'none';
+
+                // Show selected payment details
+                if (method === 'card') {
+                    cardDetails.style.display = 'block';
+                } else if (method === 'paypal') {
+                    paypalDetails.style.display = 'block';
+                } else if (method === 'cash') {
+                    cashDetails.style.display = 'block';
+                }
+            }
+
+            function submitPaypalForm() {
+                document.getElementById('paypal-form').submit();
+            }
+        </script>
 		<script src="cart-page/js/bootstrap.bundle.min.js"></script>
 		<script src="cart-page/js/tiny-slider.js"></script>
 		<script src="cart-page/js/custom.js"></script>

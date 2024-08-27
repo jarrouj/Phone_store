@@ -11,9 +11,14 @@ use App\Models\OrderProduct;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
+
 
 class PaymentController extends Controller
 {
+
+    //stripe
+
     private $testCardNumbers = [
         '4242424242424242', // Visa
         '5555555555554444', // MasterCard
@@ -33,7 +38,7 @@ class PaymentController extends Controller
 
             // Check if the card number is a valid test card number
             if (!in_array($cardNumber, $this->testCardNumbers)) {
-                return response()->json(['error' => 'Invalid test card number.'], 400);
+                return redirect('/cancel');
             }
 
             \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
@@ -50,10 +55,11 @@ class PaymentController extends Controller
 
            $this->Order($amount);
 
-            return view('order_success');
+            return redirect('/order-success');
 
         } catch (\Exception $e) {
-            return view('404');
+            // dd($e->getMessage());
+            return redirect('/cancel');
         }
     }
 
@@ -67,7 +73,7 @@ class PaymentController extends Controller
         $order->address = 'ugfyut';
         $order->phone   = '7686';
         $order->email   = $user->email;
-        $order->order_number  = 15;
+        $order->order_number = mt_rand(100000, 999999); // generates a random 6-digit number
         $order->paid    = 1;
         $order->method  = 1;
         // promo
@@ -85,6 +91,93 @@ class PaymentController extends Controller
         }
         Cart::where('user_id', $user->id)->delete();
 
+    }
+
+    //paypal
+
+    public function paypal(Request $request , $amount)
+    {
+        $provider = new PayPalClient;
+        $provider->setApiCredentials(config('paypal'));
+        $provider->getAccessToken();
+
+        $response = $provider->createOrder([
+            "intent" => "CAPTURE",
+            "application_context" => [
+                 "return_url" => route('success'),
+                 "cancel_url" => route('cancel')
+            ],
+            "purchase_units" => [
+                [
+                    "amount" => [
+                       "currency_code" => "USD",
+                       "value" => $amount
+                    ]
+                ]
+            ]
+        ]);
+
+        // Check if the response is valid and contains the expected data
+        if (isset($response['id']) && !empty($response['id']) && isset($response['links'])) {
+            foreach ($response['links'] as $link) {
+                if ($link['rel'] === 'approve') {
+                    session()->put('product_name', $request->product_name);
+                    session()->put('quantity', $request->qty);
+                    $this->Order($amount);
+                    return redirect()->away($link['href']);
+                }
+            }
+            // If no approve link found, redirect to cancel
+            return redirect()->route('cancel');
+        }
+
+        // If response is not valid, redirect to cancel
+        return redirect()->route('cancel');
+    }
+
+
+    public function success(Request $request)
+    {
+
+        $provider = new PayPalClient;
+        $provider->setApiCredentials(config('paypal'));
+        $provider->getAccessToken();
+        $response = $provider->capturePaymentOrder($request->token);
+        return redirect('/order-success');
+    }
+
+    //cash on delivery
+    public function cash_on_delivery($amount)
+    {
+        try {
+            $this->Order($amount);
+
+            return redirect('/order-success');
+        } catch (\Exception $e) {
+
+            return redirect('/cancel');
+        }
+    }
+
+
+    public function cancel()
+    {
+        $cartItems = Cart::where('user_id', Auth::id())->get();
+
+        if (Auth::check()) {
+            $cartItemCount = Cart::where('user_id', Auth::user()->id)->count();
+        } else {
+            $cartItemCount = 0;
+        }
+
+
+
+        return view('404' , compact('cartItemCount', 'cartItems'));
+    }
+
+    public function order_success()
+    {
+        return view('order_success');
     }
 
 }

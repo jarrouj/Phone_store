@@ -7,8 +7,8 @@
 <meta name="author" content="">
 <meta name="keywords" content="">
 <meta name="description" content="">
-<link rel="stylesheet" type="text/css" href="home/assets/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="home/assets/style.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('home/assets/css/bootstrap.min.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('home/assets/style.css')}}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
 
 <!-- script
 ================================================== -->
-<script src="home/assets/js/modernizr.js"></script>
+<script src="{{ asset('home/assets/js/modernizr.js')}}"></script>
 
 
 
