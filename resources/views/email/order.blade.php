@@ -14,10 +14,10 @@
         Hello [shop name] Family, we wanted you to know that you received a new message from your website.
         Please Find the information provided below!
     </h3>
-    <h4>Name: {{ $order->name }}</h4> 
-    @foreach ($orderProducts as $orderProduct)
+    <h4>Name: {{ $order->name }}</h4>
+    {{-- @foreach ($orderProducts as $orderProduct)
     <h4>Product ID: {{ $orderProduct->product_id }}</h4>
-   @endforeach
+   @endforeach --}}
 </body>
 
 </html>

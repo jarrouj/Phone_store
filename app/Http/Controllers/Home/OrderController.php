@@ -34,4 +34,5 @@ class OrderController extends Controller
         return view('Home.order', compact('cartItemCount', 'cartItems', 'products', 'total_amount'));
     }
 
+
 }

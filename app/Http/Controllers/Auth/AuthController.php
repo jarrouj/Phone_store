@@ -47,10 +47,11 @@ class AuthController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            return response()->json([
-                'status'  => false,
-                'message' => $e->getMessage()
-            ], 500);
+            // return response()->json([
+            //     'status'  => false,
+            //     'message' => $e->getMessage()
+            // ], 500);
+            return view('404');
         }
     }
 
@@ -75,10 +76,11 @@ class AuthController extends Controller
 
             return redirect('/');
         } catch (\Exception $e) {
-            return response()->json([
-                'status'  => false,
-                'message' => $e
-            ], 500);
+            // return response()->json([
+            //     'status'  => false,
+            //     'message' => $e
+            // ], 500);
+            return view('404');
         }
     }
     public function logout(Request $request)
@@ -102,7 +104,7 @@ class AuthController extends Controller
             Session::save();
 
             // Respond with success
-            return redirect()->back();
+            return redirect('/');
         } catch (\Exception $e) {
             return response()->json([
                 'status'  => false,
@@ -122,29 +124,27 @@ class AuthController extends Controller
 
     public function callback($provider)
     {
-
-        try{
+        try {
+            // Retrieve the user information from the provider
             $SocialUser = Socialite::driver($provider)->user();
-            // dd($SocialUser);
 
-            if(User::where('email' , $SocialUser->getEmail())->exists()){
-                return redirect('/login')->withErrors(['email' => 'This email uses different method to login.' ]);
-            }
+            // Check if the user already exists in the database
+            $user = User::where('provider', $provider)
+                        ->where('provider_id', $SocialUser->id)
+                        ->orWhere('email', $SocialUser->getEmail()) // Also check by email
+                        ->first();
 
-            $user = User::where([
-                'provider' => $provider,
-                 'provider_id' => $SocialUser->id,
-            ])->first();
-
-            if(!$user){
+            if ($user) {
+                // If user exists, log them in
+                Auth::login($user);
+            } else {
+                // If user does not exist, create a new user
                 $nickname = $SocialUser->nickname ?? $SocialUser->name;
-
 
                 // If both nickname and name are null, generate a random username
                 if (is_null($nickname)) {
                     $nickname = Str::lower(Str::random(8));
                 }
-
 
                 $user = User::create([
                     'name' => $nickname,
@@ -152,15 +152,17 @@ class AuthController extends Controller
                     'provider' => $provider,
                     'provider_id' => $SocialUser->getId(),
                     'provider_token' => $SocialUser->token,
-                    'email_verified_at' => now()
+                    'email_verified_at' => now(),
                 ]);
 
                 Auth::login($user);
-                return redirect('/');
             }
-        }catch(\Exception $e){
-            return redirect('/login');
-        }
 
+            return redirect('/');
+
+        } catch (\Exception $e) {
+            return redirect('/login')->withErrors(['error' => 'Login failed, please try again.']);
+        }
     }
+
 }

@@ -15,30 +15,43 @@
                             <div class="d-block w-50 m-auto">
                                 <form action="{{ url('/admin/search_user') }}" method="GET">
                                     @csrf
-                                    <p for="" class="text-center form-label">Search Names, Emails or Phone
-                                        Number
-                                    </p>
+                                    <p for="" class="text-center form-label">Search Names, Emails or Phone Number</p>
 
-                                    <div class="d-flex justify-content-center">
-
+                                    <div class="d-flex justify-content-center align-items-center">
                                         <div class="input-group mb-3 w-75">
-
-                                            <input type="text" name="text" class="form-control"
-                                                placeholder="example@gmail.com" style="height: 41px "
-                                                id="searchInput">
-
-
+                                            <input type="text" name="text" class="form-control" placeholder="example@gmail.com" style="height: 41px" id="searchInput">
 
                                         </div>
-
                                     </div>
-
                                 </form>
                             </div>
                         </div>
                     </div>
 
-                    <div class="container-fluid py-4">
+                    <div class="row">
+                        <div class="col-12 d-flex justify-content-end">
+                            <div class="col-md-4">
+                                <div class="ms-md-5 mb-md-5 me-md-5"> <!-- Added margin-end (right) for medium devices and up -->
+                                    <label for="filter-by" class="form-label">Filter By:</label>
+                                    <div class="input-group">
+                                        <select class="form-select" id="filter-by" name="filter">
+                                            <option value="">-- Select --</option>
+                                            <option value="today">Today</option>
+                                            <option value="yesterday">Yesterday</option>
+                                            <option value="week">Past Week</option>
+                                            <option value="month">Past Month</option>
+                                            <option value="year">This Year</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="container-fluid">
                         <div class="row">
                             <div class="col-12">
                                 <div class="card mb-4">
@@ -252,7 +265,7 @@
                                                 @if ($data->method == 1)
                                                     <span class="badge badge-sm bg-success">Cash</span>
                                                 @else
-                                                    <span class="badge badge-sm bg-danger ">Points</span>
+                                                    <span class="badge badge-sm bg-danger ">Stripe/Paypal</span>
                                                 @endif
                                             </td>
 
@@ -346,14 +359,27 @@
 
         <script>
             $(document).ready(function() {
+                // Search input event
                 $('#searchInput').on('keyup', function() {
                     var searchInput = $('#searchInput').val();
+                    searchOrders(searchInput);
+                });
 
+                // Filter dropdown change event
+                $('#filter-by').on('change', function() {
+                    var filterValue = $(this).val();
+                    var searchInput = $('#searchInput').val(); // Get current search input value
+                    searchOrders(searchInput, filterValue);
+                });
+
+                // Function to search and filter orders
+                function searchOrders(query = '', filter = '') {
                     $.ajax({
                         url: '{{ url('admin/search_order') }}',
                         type: 'GET',
                         data: {
-                            query: searchInput,
+                            query: query,
+                            filter: filter,
                         },
                         success: function(response) {
                             var ordersHtml = '';
@@ -452,14 +478,10 @@
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
                                               <i class="fa fa-times text-danger"></i> fix
-
                                             </p>
                                         </td>
-
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">
-
-                                            </p>
+                                            <p class="text-xs font-weight-bold mb-0"></p>
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
@@ -491,9 +513,10 @@
                             console.error(xhr.responseText);
                         }
                     });
-                });
+                }
             });
         </script>
+
 
       @include('Admin.components.js')
     </body>

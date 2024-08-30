@@ -3,6 +3,66 @@
 
 <head>
     @include('Auth.components.css')
+    <style>
+        .line {
+            position: relative;
+            height: 1px;
+            width: 100%;
+            margin: 15px 0;
+            background-color: #d4d4d4;
+        }
+
+        .line::before {
+            content: 'Or';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #FFF;
+            color: #8b8b8b;
+            padding: 0 15px;
+        }
+
+        .media-options {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .btn-google {
+            background-color: #db4437;
+        }
+
+        .google-icon {
+            margin-right: 10px;
+        }
+
+        .btn-github {
+            background-color: #333;
+        }
+
+        .github-icon {
+            margin-right: 10px;
+        }
+
+        .mt-2 {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body class="">
@@ -89,26 +149,31 @@
                                     <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Sign
                                         up</button>
                                 </div>
-                                <div class="container mt-5">
-                                    <div class="row justify-content-center">
-                                        <div class="col-md-6 text-center">
-                                            <h4>Register with:</h4>
-                                            <div class="mt-3">
-                                                <!-- Google Register Button -->
-                                                <a href="/auth/google/redirect" class="btn btn-danger btn-block">
-                                                    <i class="fab fa-google"></i> Register with Google
-                                                </a>
-                                                <!-- GitHub Register Button -->
-                                                <a href="/auth/github/redirect" class="btn btn-dark btn-block mt-2">
-                                                    <i class="fab fa-github"></i> Register with GitHub
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="text-sm mt-3 mb-0">Already have an account? <a href="{{ route('login') }}"
-                                        class="text-dark font-weight-bolder">Sign in</a></p>
+
                             </form>
+
+                            <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                                <p class="mb-0 text-sm mx-auto mt-3">
+                                    Already have an account?
+                                    <a href="{{ route('login') }}"
+                                        class="text-primary text-gradient font-weight-bold">Login</a>
+                                </p>
+                            </div>
+                            <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                                <div class="line"></div>
+                                <div class="media-options mt-2">
+                                    <a href="/auth/google/redirect" class="btn btn-google">
+                                        <i class="fab fa-google google-icon"></i>
+                                        Register with Google
+                                    </a>
+                                </div>
+                                <div class="media-options mt-2">
+                                    <a href="/auth/github/redirect" class="btn btn-github">
+                                        <i class="fab fa-github github-icon"></i>
+                                        Register with GitHub
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -15,7 +15,12 @@ class CartController extends Controller
     public function add_cart(Request $request)
     {
         try {
-            if (Auth::check()) {
+            if (!Auth::check()) {
+                // Redirect to login if the user is not authenticated
+                return redirect('/login');
+            }
+            if (Auth::check())
+            {
                 $user = Auth::user();
 
                 // Check if the product is already in the cart for the current user
@@ -36,13 +41,11 @@ class CartController extends Controller
                     $cart->save();
                 }
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Product added to cart successfully!',
-                    'cart_item' => $cart
-                ], 200);
+                // Get updated cart item count
+                $cartItemCount = Cart::where('user_id', $user->id)->count();
 
-            } else {
+            } else
+            {
                 // Handling for guest users (not logged in)
                 $cart = session()->get('cart', []);
                 $productExists = false;
@@ -67,16 +70,16 @@ class CartController extends Controller
 
                 session()->put('cart', $cart);
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Product added to cart successfully!',
-                    'cart_item' => $cart
-                ], 200);
+                // Get updated cart item count for guest users
+                $cartItemCount = count($cart);
             }
 
-            // Get updated cart item count
-            $cartItemCount = Auth::check() ? Cart::where('user_id', $user->id)->count() : count(session('cart', []));
-            return response()->json(['cartItemCount' => $cartItemCount]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product added to cart successfully!',
+                'cart_item' => $cart,
+                'cartItemCount' => $cartItemCount
+            ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -86,6 +89,7 @@ class CartController extends Controller
             ], 500);
         }
     }
+
 
     public function update_cart_item($id , Request $request)
     {

@@ -22,16 +22,21 @@ use App\Http\Controllers\Payment\PaymentController;
 Route::get('/', [HomeController::class , 'index']);
 
 // {{ Authentication }}
-Route::get('/login', [AuthController::class , 'login_page'])->name('login');
-Route::get('/register', [AuthController::class , 'register_page'])->name('register');
-Route::get('/auth/{provider}/redirect', [AuthController::class , 'redirect']);
-Route::get('/auth/{provider}/callback', [AuthController::class , 'callback']);
+Route::get('/login', [AuthController::class , 'login_page'])->name('login')->middleware(Authenticate::class);
+Route::get('/register', [AuthController::class , 'register_page'])->name('register')->middleware(Authenticate::class);
+Route::get('/auth/{provider}/redirect', [AuthController::class , 'redirect'])->middleware('web' , Authenticate::class);
+Route::get('/auth/{provider}/callback', [AuthController::class , 'callback'])->middleware('web' , Authenticate::class);
 
 //{{ Cart }}
 Route::get('/cart', [HomeController::class , 'show_cart']);
 
 // {{ Order }}
 Route::get('/checkout-page', [HomeOrderController::class , 'show_order']);
+
+//{{ User Product }}
+Route::get('/products', [HomeController::class , 'show_product']);
+Route::get('/products/search', [HomeController::class, 'search'])->name('product.search');
+
 
 //{{ Payments }}
 Route::post('/paypal/{amount}', [PaymentController::class , 'paypal'])->name('paypal');

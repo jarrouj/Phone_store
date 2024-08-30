@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
@@ -110,19 +111,86 @@ class OrderController extends Controller
     }
 
     public function search_order(Request $request)
-    {
-        
-        $query = $request->get('query');
+{
+    $query = $request->get('query');
+    $filter = $request->input('filter');
 
-        $order = Order::where(function ($queryBuilder) use ($query) {
-            $queryBuilder->where('id', 'like', "%$query%")
-                ->orWhere('email', 'like', "%$query%")
-                ->orWhere('phone', 'like', "%$query%")
-                ->orWhere('username', 'like', "%$query%")
-                ->orWhere('order_number', 'like', "%$query%");
-        })->get();
+    // Start with the query builder
+    $orderQuery = Order::where(function ($queryBuilder) use ($query) {
+        $queryBuilder->where('id', 'like', "%$query%")
+            ->orWhere('email', 'like', "%$query%")
+            ->orWhere('phone', 'like', "%$query%")
+            ->orWhere('username', 'like', "%$query%")
+            ->orWhere('order_number', 'like', "%$query%");
+    });
 
-
-        return response()->json($order);
+    // Apply filter based on the selected time range
+    if ($filter) {
+        switch ($filter) {
+            case 'today':
+                $orderQuery->whereDate('created_at', Carbon::today());
+                break;
+            case 'yesterday':
+                $orderQuery->whereDate('created_at', Carbon::yesterday());
+                break;
+            case 'week':
+                $orderQuery->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+                break;
+            case 'month':
+                $orderQuery->whereMonth('created_at', Carbon::now()->month);
+                break;
+            case 'year':
+                $orderQuery->whereYear('created_at', Carbon::now()->year);
+                break;
+        }
     }
+
+    // Execute the query
+    $orders = $orderQuery->get();
+
+    return response()->json($orders);
+}
+
+//     public function filter_order(Request $request)
+// {
+//     $query = $request->input('query');
+//     $filter = $request->input('filter');
+
+//     $ordersQuery = Order::query();
+
+//     if ($query) {
+//         // Apply search query if provided
+//         $ordersQuery->where(function ($query) use ($query) {
+//             $query->where('order_number', 'LIKE', "%$query%")
+//                   ->orWhere('username', 'LIKE', "%$query%")
+//                   ->orWhere('email', 'LIKE', "%$query%")
+//                   ->orWhere('phone', 'LIKE', "%$query%");
+//         });
+//     }
+
+//     if ($filter) {
+//         // Apply filter based on the selected time range
+//         switch ($filter) {
+//             case 'today':
+//                 $ordersQuery->whereDate('created_at', Carbon::today());
+//                 break;
+//             case 'yesterday':
+//                 $ordersQuery->whereDate('created_at', Carbon::yesterday());
+//                 break;
+//             case 'week':
+//                 $ordersQuery->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+//                 break;
+//             case 'month':
+//                 $ordersQuery->whereMonth('created_at', Carbon::now()->month);
+//                 break;
+//             case 'year':
+//                 $ordersQuery->whereYear('created_at', Carbon::now()->year);
+//                 break;
+//         }
+//     }
+
+//     $orders = $ordersQuery->get();
+
+//     return response()->json($orders);
+// }
 }

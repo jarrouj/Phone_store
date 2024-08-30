@@ -71,18 +71,21 @@
   <div class="search-popup">
       <div class="search-popup-container">
 
-        <form role="search" method="get" class="search-form" action="">
-          <input type="search" id="search-form" class="search-field" placeholder="Type and press enter" value="" name="s" />
+        <form role="search" method="GET" class="search-form" action="{{ route('product.search') }}">
+          <input type="search" id="search-form" class="search-field" placeholder="Type and press enter" value="" name="query" />
           <button type="submit" class="search-submit"><svg class="search"><use xlink:href="#search"></use></svg></button>
         </form>
 
         <h5 class="cat-list-title">Browse Categories</h5>
 
         <ul class="cat-list">
-          <li class="cat-list-item">
-            <a href="#" title="Mobile Phones">Mobile Phones</a>
-          </li>
-          <li class="cat-list-item">
+            @foreach ($categories as $category)
+            <li class="cat-list-item">
+                <a href="#" title="Mobile Phones">{{ $category->name }}</a>
+              </li>
+            @endforeach
+
+          {{-- <li class="cat-list-item">
             <a href="#" title="Smart Watches">Smart Watches</a>
           </li>
           <li class="cat-list-item">
@@ -99,7 +102,7 @@
           </li>
           <li class="cat-list-item">
             <a href="#" title="Memory Cards">Memory Cards</a>
-          </li>
+          </li> --}}
         </ul>
 
       </div>
@@ -111,7 +114,7 @@
     <nav id="header-nav" class="navbar navbar-expand-lg px-3 mb-3">
       <div class="container-fluid">
         <a class="navbar-brand" href="index.html">
-          <img src="home/assets/images/main-logo.png" class="logo">
+          <img src="{{ asset('home/assets/images/main-logo.png')}}" class="logo">
         </a>
         <button class="navbar-toggler d-flex d-lg-none order-3 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-expanded="false" aria-label="Toggle navigation">
           <svg class="navbar-icon">
@@ -121,7 +124,7 @@
         <div class="offcanvas offcanvas-end" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel">
           <div class="offcanvas-header px-4 pb-0">
             <a class="navbar-brand" href="index.html">
-              <img src="home/assets/images/main-logo.png" class="logo">
+              <img src="{{ asset('home/assets/images/main-logo.png')}}" class="logo">
             </a>
             <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>
           </div>
@@ -164,7 +167,7 @@
 
 
                     <li class="pe-3">
-                        @if(session('token') !== null)
+                        @if(Auth::user())
                             <!-- Dropdown for authenticated users -->
                             <div class="dropdown">
                                 <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">

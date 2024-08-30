@@ -159,18 +159,18 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ url('/admin/update_category/' . $data->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url('/admin/update_category/${product.id}') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="modal-body">
-
+a
 
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">
 
                            Category Name
                         </label>
-                        <input type="text" name="name" class="form-control" required value="{{ $data->name }}" placeholder="Name...">
+                        <input type="text" name="name" class="form-control" required value="${product.name}" placeholder="Name...">
                     </div>
 
 
