@@ -24,8 +24,8 @@ Route::get('/', [HomeController::class , 'index']);
 // {{ Authentication }}
 Route::get('/login', [AuthController::class , 'login_page'])->name('login')->middleware(Authenticate::class);
 Route::get('/register', [AuthController::class , 'register_page'])->name('register')->middleware(Authenticate::class);
-Route::get('/auth/{provider}/redirect', [AuthController::class , 'redirect'])->middleware('web' , Authenticate::class);
-Route::get('/auth/{provider}/callback', [AuthController::class , 'callback'])->middleware('web' , Authenticate::class);
+Route::get('/auth/{provider}/redirect', [AuthController::class , 'redirect'])->middleware('web');
+Route::get('/auth/{provider}/callback', [AuthController::class , 'callback'])->middleware('web');
 
 //{{ Cart }}
 Route::get('/cart', [HomeController::class , 'show_cart']);
