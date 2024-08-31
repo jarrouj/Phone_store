@@ -87,7 +87,10 @@ class HomeController extends Controller
             ];
         });
 
-        return view('Home.pages.order', ['ordersData' => $ordersData], compact('cartItemCount'));
+        $categories = Category::all();
+
+
+        return view('Home.pages.order', ['ordersData' => $ordersData], compact('cartItemCount' , 'categories'));
     }
 
     public function show_product()
@@ -115,8 +118,10 @@ class HomeController extends Controller
 
         // Search for products by name
         $products = Product::where('name', 'LIKE',  "%$query%")->get();
+        $categories = Category::all();
 
-        return view('Home.pages.products', compact('products' , 'cartItemCount'));
+
+        return view('Home.pages.products', compact('products' , 'cartItemCount'  , 'categories'));
     }
 
 }

@@ -21,7 +21,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3 text-center">
                                     <label for="exampleFormControlInput1" class="form-label">Full Name</label>
-                                    <p class="text-xs font-weight-bold mb-0">{{ $order->name }}</p>
+                                    <p class="text-xs font-weight-bold mb-0">{{ $order->username }}</p>
                                 </div>
                             </div>
 

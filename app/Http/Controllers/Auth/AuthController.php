@@ -131,7 +131,7 @@ class AuthController extends Controller
             // Check if the user already exists in the database
             $user = User::where('provider', $provider)
                         ->where('provider_id', $SocialUser->id)
-                        ->orWhere('email', $SocialUser->getEmail()) // Also check by email
+                        ->orWhere('email', $SocialUser->getEmail()) 
                         ->first();
 
             if ($user) {
